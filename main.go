@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,7 +10,7 @@ import (
 )
 
 type Payload struct {
-	Name  string `json: "name`
+	Name  string `json: name`
 	Email string `json: email`
 }
 
@@ -51,6 +52,12 @@ func postMethodTest(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	fmt.Printf("Parsed Payload: %+v\n", p)
 	fmt.Println("Recived Post data", string(body))
+
+	user, err := client.Database("db").Collection("users").InsertOne(context.TODO(), p)
+
+	if err != nil {
+		fmt.Println(user.InsertedID)
+	}
 
 	data := ResponseData{
 		Message: "Hello",
